@@ -24,9 +24,9 @@ cp -r "$LLAMAFILE_FILES_DIR"/* .
 ../llama.cpp.patches/renames.sh
 
 echo "Removing unnecessary files and directories..."
-# If you want to clean up the original code, add some `rm -rf` commands here.
+# If you want to clean up the original code, add your `rm` commands here.
 # For example:
-rm -rf docs/
+rm Makefile
 
 cd ..
 echo "Applying modifications to upstream files..."
