@@ -1,5 +1,4 @@
 diff --git a/common/common.cpp b/common/common.cpp
-index b0591e84..67d5f310 100644
 --- a/llama.cpp/common/common.cpp
 +++ b/llama.cpp/common/common.cpp
 @@ -889,6 +889,21 @@ std::string fs_get_cache_directory() {

@@ -1,5 +1,4 @@
 diff --git a/common/arg.cpp b/common/arg.cpp
-index 4316917d..a6333497 100644
 --- a/llama.cpp/common/arg.cpp
 +++ b/llama.cpp/common/arg.cpp
 @@ -41,6 +41,10 @@

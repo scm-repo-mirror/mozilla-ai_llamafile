@@ -1,5 +1,4 @@
 diff --git a/tools/mtmd/deprecation-warning.cpp b/tools/mtmd/deprecation-warning.cpp
-index dded0a56..866874c4 100644
 --- a/llama.cpp/tools/mtmd/deprecation-warning.cpp
 +++ b/llama.cpp/tools/mtmd/deprecation-warning.cpp
 @@ -1,5 +1,6 @@

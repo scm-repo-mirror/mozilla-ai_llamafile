@@ -1,5 +1,4 @@
 diff --git a/common/CMakeLists.txt b/common/CMakeLists.txt
-index fe290bf8..05384093 100644
 --- a/llama.cpp/common/CMakeLists.txt
 +++ b/llama.cpp/common/CMakeLists.txt
 @@ -97,14 +97,11 @@ if (LLAMA_OPENSSL)
@@ -17,3 +16,12 @@ index fe290bf8..05384093 100644
          #    endif
          #endif
          int main() { return 0; }
+@@ -113,7 +110,7 @@ if (LLAMA_OPENSSL)
+         if (OPENSSL_VERSION_SUPPORTED)
+             message(STATUS "OpenSSL found: ${OPENSSL_VERSION}")
+             target_compile_definitions(${TARGET} PUBLIC CPPHTTPLIB_OPENSSL_SUPPORT)
+-            target_link_libraries(${TARGET} PUBLIC OpenSSL::SSL OpenSSL::Crypto)
++            target_link_libraries(${TARGET} PUBLIC libssl.a libcrypto.a)
+             if (APPLE AND CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+                 target_compile_definitions(${TARGET} PUBLIC CPPHTTPLIB_USE_CERTS_FROM_MACOSX_KEYCHAIN)
+                 find_library(CORE_FOUNDATION_FRAMEWORK CoreFoundation REQUIRED)

@@ -1,5 +1,4 @@
 diff --git a/common/common.h b/common/common.h
-index 54b7849b..343d9279 100644
 --- a/llama.cpp/common/common.h
 +++ b/llama.cpp/common/common.h
 @@ -277,6 +277,11 @@ struct common_params {

@@ -1,5 +1,4 @@
 diff --git a/tools/server/server.cpp b/tools/server/server.cpp
-index f5089bef..3bd12d36 100644
 --- a/llama.cpp/tools/server/server.cpp
 +++ b/llama.cpp/tools/server/server.cpp
 @@ -30,6 +30,34 @@
