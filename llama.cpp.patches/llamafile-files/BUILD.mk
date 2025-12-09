@@ -268,7 +268,8 @@ o/$(MODE)/llama.cpp/tools/server/%.hpp: llama.cpp/tools/server/public/%
 	@mkdir -p $(dir $@)
 	$(eval VARNAME := $(shell echo "$(notdir $*)" | sed 's/[.-]/_/g'))
 	@echo 'unsigned char $(VARNAME)[] = {' > $@
-	@od -An -tx1 -v $< | sed 's/ /0x/g; s/0x$$//' | sed 's/0x/, 0x/g; s/^, //' | sed 's/$$/,/' >> $@
+	@od -An -tx1 -v $< | awk '{for(i=1;i<=NF;i++){if(NR>1||i>1)printf", "; printf"0x%s",$$i}}' >> $@
+	@echo >> $@
 	@echo '};' >> $@
 	@echo 'unsigned int $(VARNAME)_len = sizeof($(VARNAME));' >> $@
 
