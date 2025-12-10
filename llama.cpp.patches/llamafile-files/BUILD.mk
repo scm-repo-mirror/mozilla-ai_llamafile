@@ -316,12 +316,12 @@ $(TOOL_SERVER_OBJS): $(SERVER_ASSETS)
 $(LLAMA_CPP_OBJS) $(TOOL_MAIN_OBJS) $(TOOL_QUANTIZE_OBJS) $(TOOL_IMATRIX_OBJS) \
 $(TOOL_PERPLEXITY_OBJS) $(TOOL_BENCH_OBJS) $(TOOL_SERVER_OBJS) $(MTMD_OBJS): \
 	private CPPFLAGS += \
+		-iquote llama.cpp/common \
 		-iquote llama.cpp/include \
 		-iquote llama.cpp/ggml/include \
 		-iquote llama.cpp/ggml/src \
 		-iquote llama.cpp/ggml/src/ggml-cpu \
 		-iquote llama.cpp/src \
-		-iquote llama.cpp/common \
 		-iquote llama.cpp/tools/mtmd \
 		-iquote o/$(MODE)/llama.cpp/tools/server \
 		-isystem llama.cpp/vendor
