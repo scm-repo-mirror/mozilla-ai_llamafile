@@ -19,6 +19,7 @@ include llama.cpp/BUILD.mk
 include stable-diffusion.cpp/BUILD.mk
 include whisper.cpp/BUILD.mk
 include localscore/BUILD.mk
+include llamafile_new/BUILD.mk
 endif
 
 # the root package is `o//` by default
