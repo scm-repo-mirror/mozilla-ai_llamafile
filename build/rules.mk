@@ -25,6 +25,13 @@ o/$(MODE)/%.o: %.cpp $(COSMOCC)
 	@mkdir -p $(@D)
 	$(COMPILE.cc) -o $@ $<
 
+# ==============================================================================
+# Extension-preserving compilation rules
+# ==============================================================================
+# These rules produce foo.c.o from foo.c (instead of foo.o).
+# Required when both foo.c and foo.cpp exist in the same directory,
+# otherwise both would produce foo.o and collide.
+# Example: ggml/src/ggml.c and ggml/src/ggml.cpp both exist in llama.cpp.
 o/$(MODE)/%.c.o: %.c $(COSMOCC)
 	@mkdir -p $(@D)
 	$(COMPILE.c) -o $@ $<
