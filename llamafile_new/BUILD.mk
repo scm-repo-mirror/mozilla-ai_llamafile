@@ -139,14 +139,40 @@ LLAMAFILE_NEW_OBJS := \
 LLAMAFILE_NEW_HIGHLIGHT_GPERF_FILES := $(wildcard llamafile/highlight/*.gperf)
 LLAMAFILE_NEW_HIGHLIGHT_KEYWORDS := $(LLAMAFILE_NEW_HIGHLIGHT_GPERF_FILES:%.gperf=o/$(MODE)/%.o)
 
+# Server objects for llamafile_new (compiled with -DLLAMAFILE_TUI to exclude standalone main)
+# Note: server.cpp is compiled separately below with LLAMAFILE_TUI defined
+LLAMAFILE_NEW_SERVER_SUPPORT_OBJS := \
+	o/$(MODE)/llama.cpp/tools/server/server-common.cpp.o \
+	o/$(MODE)/llama.cpp/tools/server/server-context.cpp.o \
+	o/$(MODE)/llama.cpp/tools/server/server-http.cpp.o \
+	o/$(MODE)/llama.cpp/tools/server/server-models.cpp.o \
+	o/$(MODE)/llama.cpp/tools/server/server-queue.cpp.o \
+	o/$(MODE)/llama.cpp/tools/server/server-task.cpp.o
+
 LLAMAFILE_NEW_DEPS := \
 	$(GGML_OBJS) \
 	$(LLAMA_OBJS) \
 	$(COMMON_OBJS) \
 	$(MTMD_OBJS) \
 	$(HTTPLIB_OBJS) \
+	$(LLAMAFILE_NEW_SERVER_SUPPORT_OBJS) \
 	$(LLAMAFILE_NEW_HIGHLIGHT_KEYWORDS) \
 	o/$(MODE)/third_party/stb/stb_image_resize2.o
+
+# ==============================================================================
+# Server integration
+# ==============================================================================
+
+# Include paths needed for server compilation
+LLAMAFILE_NEW_SERVER_INCS := \
+	$(LLAMAFILE_NEW_INCS) \
+	-iquote llama.cpp/tools/server \
+	-iquote o/$(MODE)/llama.cpp/tools/server
+
+# Compile server.cpp with -DLLAMAFILE_TUI to exclude standalone main()
+o/$(MODE)/llamafile_new/server.cpp.o: llama.cpp/tools/server/server.cpp $(SERVER_ASSETS)
+	@mkdir -p $(@D)
+	$(CXX) $(CXXFLAGS) $(LLAMAFILE_NEW_CPPFLAGS) $(LLAMAFILE_NEW_SERVER_INCS) -DLLAMAFILE_TUI -c -o $@ $<
 
 # ==============================================================================
 # Main executable
@@ -158,10 +184,12 @@ o/$(MODE)/llamafile_new/main.o: llamafile_new/main.cpp
 
 o/$(MODE)/llamafile_new/llamafile: \
 		o/$(MODE)/llamafile_new/main.o \
+		o/$(MODE)/llamafile_new/server.cpp.o \
 		$(LLAMAFILE_NEW_OBJS) \
-		$(LLAMAFILE_NEW_DEPS)
+		$(LLAMAFILE_NEW_DEPS) \
+		$(SERVER_ASSETS)
 	@mkdir -p $(@D)
-	$(CXX) $(LDFLAGS) -o $@ $^ $(LDLIBS)
+	$(CXX) $(LDFLAGS) -o $@ $(filter %.o,$^) $(LDLIBS)
 
 # ==============================================================================
 # Pattern rules for llamafile_new sources
