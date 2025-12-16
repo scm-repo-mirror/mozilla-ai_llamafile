@@ -1,18 +1,19 @@
 diff --git a/tools/server/server.cpp b/tools/server/server.cpp
 --- a/llama.cpp/tools/server/server.cpp
 +++ b/llama.cpp/tools/server/server.cpp
-@@ -15,6 +15,10 @@
+@@ -15,6 +15,11 @@
  #include <windows.h>
  #endif
  
 +#ifdef COSMOCC
 +#include <cosmo.h>
++#include "llamafile.h"
 +#endif
 +
  static std::function<void(int)> shutdown_handler;
  static std::atomic_flag is_terminating = ATOMIC_FLAG_INIT;
  
-@@ -65,7 +69,8 @@ static server_http_context::handler_t ex_wrapper(server_http_context::handler_t
+@@ -65,7 +70,8 @@ static server_http_context::handler_t ex_wrapper(server_http_context::handler_t
      };
  }
  
@@ -22,7 +23,18 @@ diff --git a/tools/server/server.cpp b/tools/server/server.cpp
      // own arguments required by this example
      common_params params;
  
-@@ -304,3 +309,15 @@ int main(int argc, char ** argv, char ** envp) {
+@@ -89,6 +95,10 @@ int main(int argc, char ** argv, char ** envp) {
+         params.model_alias = params.model.name;
+     }
+ 
++#ifdef COSMOCC
++    llamafile_has_metal();  // triggers Metal backend registration on macOS ARM64
++#endif
++
+     common_init();
+ 
+     // struct that contains llama context and inference
+@@ -304,3 +314,15 @@ int main(int argc, char ** argv, char ** envp) {
  
      return 0;
  }
