@@ -34,7 +34,6 @@
 
 #include "color.h"
 #include "compute.h"
-#include "llama.h"  // llamafile wrapper
 #include "string.h"
 #include "llamafile.h"
 
@@ -42,13 +41,6 @@
 #ifndef LLAMAFILE_VERSION_STRING
 #define LLAMAFILE_VERSION_STRING "0.10.0-dev"
 #endif
-
-// Null log callback to suppress llama.cpp logging
-static void llama_log_callback_null(ggml_log_level level, const char *text, void *user_data) {
-    (void)level;
-    (void)text;
-    (void)user_data;
-}
 
 namespace lf {
 namespace chatbot {
@@ -123,7 +115,7 @@ int main(int argc, char **argv) {
     if (llamafile_has_metal()) {
         // Metal dylib loaded - disable logging in it too (it has its own copy of ggml)
         if (!verbose) {
-            llamafile_metal_log_set((llamafile_log_callback)llama_log_callback_null, NULL);
+            llamafile_metal_log_set(llamafile_log_callback_null, NULL);
         }
     }
     if (verbose)
@@ -148,7 +140,7 @@ int main(int argc, char **argv) {
     // We must set this AFTER common_init() since it overwrites the log callback
     // and BEFORE model loading to suppress those logs
     if (!verbose) {
-        llama_log_set(llama_log_callback_null, NULL);
+        llama_log_set((ggml_log_callback)llamafile_log_callback_null, NULL);
     }
 
     print_ephemeral("loading model...");

@@ -671,6 +671,16 @@ int llamafile_is_file_newer_than(const char *path, const char *other) {
 }
 
 // ==============================================================================
+// Logging
+// ==============================================================================
+
+void llamafile_log_callback_null(int level, const char *text, void *user_data) {
+    (void)level;
+    (void)text;
+    (void)user_data;
+}
+
+// ==============================================================================
 // GPU support
 // ==============================================================================
 // llamafile_has_metal() is defined in metal.c with full dynamic loading support
