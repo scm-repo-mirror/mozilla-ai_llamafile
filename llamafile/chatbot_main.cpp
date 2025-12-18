@@ -110,8 +110,7 @@ int main(int argc, char **argv) {
 
     // Initialize GPU support (must happen BEFORE llama_backend_init())
     // This triggers dynamic compilation and loading of GPU backends
-    if (verbose)
-        print_ephemeral("initializing gpu...");
+    print_ephemeral("initializing gpu...");
     if (llamafile_has_metal()) {
         // Metal dylib loaded - disable logging in it too (it has its own copy of ggml)
         if (!verbose) {
