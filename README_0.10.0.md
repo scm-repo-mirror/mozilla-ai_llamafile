@@ -12,7 +12,7 @@ bringing back other of its features. We have started with the llamafile TUI and 
 latest PR introduces dynamic GPU support (starting with Metal first). 
 
 While we are adding llamafile features back, some parts of the build might fail
-(for instance, the current build deos not support whisperfile and stable diffusion
+(for instance, the current build does not support whisperfile and stable diffusion
 yet). If you want the more stable build with older code you can still use the code
 (and the instructions) you can find in the main branch, while here you'll find the 
 most recent stuff.
