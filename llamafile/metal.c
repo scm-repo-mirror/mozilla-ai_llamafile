@@ -132,6 +132,9 @@ typedef struct ggml_backend_reg * ggml_backend_reg_t;
 // Function to register a backend with ggml (from ggml-backend.h)
 extern void ggml_backend_register(ggml_backend_reg_t reg);
 
+// Log callback type (must match ggml_log_callback from ggml.h)
+typedef void (*llamafile_log_callback)(int level, const char *text, void *user_data);
+
 // Function pointers for dynamically loaded Metal backend
 static struct MetalBackend {
     bool supported;
@@ -142,6 +145,9 @@ static struct MetalBackend {
     ggml_backend_t (*backend_init)(void);
     bool (*backend_is_metal)(ggml_backend_t backend);
     ggml_backend_reg_t (*backend_metal_reg)(void);
+
+    // Logging control
+    void (*log_set)(llamafile_log_callback log_callback, void *user_data);
 } g_metal;
 
 static int makedirs(const char *path, mode_t mode) {
@@ -432,11 +438,6 @@ static bool BuildMetal(const char *dso) {
         args[argc++] = "-shared";
         args[argc++] = "-pthread";
         args[argc++] = "-DNDEBUG";
-#ifdef LLAMAFILE_TUI
-        // used to trigger ggml logging on/off for metal when we want to
-        // build the TUI (this is off when building standalone lama.cpp)
-        args[argc++] = "-DLLAMAFILE_TUI";
-#endif
         args[argc++] = "-ffixed-x28";  // cosmo's TLS register
         args[argc++] = "-DTARGET_OS_OSX";
         args[argc++] = "-DGGML_MULTIPLATFORM";
@@ -530,6 +531,9 @@ static bool LinkMetal(const char *dso) {
     *(void **)(&g_metal.backend_metal_reg) = cosmo_dlsym(lib, "ggml_backend_metal_reg");
     ok &= (g_metal.backend_metal_reg != NULL);
 
+    // Import logging control (optional - don't fail if not found)
+    *(void **)(&g_metal.log_set) = cosmo_dlsym(lib, "ggml_log_set");
+
     if (!ok) {
         char *err = cosmo_dlerror();
         fprintf(stderr, "metal: %s: not all symbols could be imported\n", err ? err : "unknown error");
@@ -613,4 +617,11 @@ bool ggml_backend_is_metal(ggml_backend_t backend) {
     if (!llamafile_has_metal())
         return false;
     return g_metal.backend_is_metal(backend);
+}
+
+void llamafile_metal_log_set(llamafile_log_callback log_callback, void *user_data) {
+    if (!llamafile_has_metal())
+        return;
+    if (g_metal.log_set)
+        g_metal.log_set(log_callback, user_data);
 }

@@ -120,7 +120,12 @@ int main(int argc, char **argv) {
     // This triggers dynamic compilation and loading of GPU backends
     if (verbose)
         print_ephemeral("initializing gpu...");
-    llamafile_has_metal();  // triggers Metal backend registration on macOS ARM64
+    if (llamafile_has_metal()) {
+        // Metal dylib loaded - disable logging in it too (it has its own copy of ggml)
+        if (!verbose) {
+            llamafile_metal_log_set((llamafile_log_callback)llama_log_callback_null, NULL);
+        }
+    }
     if (verbose)
         clear_ephemeral();
 

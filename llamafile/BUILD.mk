@@ -38,6 +38,7 @@ LLAMAFILE_CPPFLAGS := \
 	-DLLAMAFILE_VERSION_MINOR=$(LLAMAFILE_VERSION_MINOR) \
 	-DLLAMAFILE_VERSION_PATCH=$(LLAMAFILE_VERSION_PATCH) \
 	-DLLAMAFILE_VERSION_STRING=\"$(LLAMAFILE_VERSION_STRING)\" \
+	-DLLAMAFILE_TUI \
 	-DCOSMOCC=1
 
 # ==============================================================================
@@ -210,10 +211,10 @@ LLAMAFILE_SERVER_INCS := \
 	-iquote llama.cpp/tools/server \
 	-iquote o/$(MODE)/llama.cpp/tools/server
 
-# Compile server.cpp with -DLLAMAFILE_TUI to exclude standalone main()
+# Compile server.cpp (-DLLAMAFILE_TUI excludes standalone main())
 o/$(MODE)/llamafile/server.cpp.o: llama.cpp/tools/server/server.cpp $(SERVER_ASSETS)
 	@mkdir -p $(@D)
-	$(CXX) $(CXXFLAGS) $(LLAMAFILE_CPPFLAGS) $(LLAMAFILE_SERVER_INCS) -DLLAMAFILE_TUI -c -o $@ $<
+	$(CXX) $(CXXFLAGS) $(LLAMAFILE_CPPFLAGS) $(LLAMAFILE_SERVER_INCS) -c -o $@ $<
 
 # ==============================================================================
 # Main executable

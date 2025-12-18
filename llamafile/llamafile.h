@@ -133,6 +133,13 @@ int llamafile_gpu_layers(int);            // Defined in llamafile.c
 int llamafile_gpu_parse(const char *);    // Defined in llamafile.c
 const char *llamafile_describe_gpu(void); // Defined in llamafile.c
 
+// Log callback type for Metal backend (matches ggml_log_callback)
+typedef void (*llamafile_log_callback)(int level, const char *text, void *user_data);
+
+// Set logging callback for Metal dylib (defined in metal.c)
+// Pass a no-op callback to disable logging
+void llamafile_metal_log_set(llamafile_log_callback log_callback, void *user_data);
+
 #ifdef __cplusplus
 }
 #endif
