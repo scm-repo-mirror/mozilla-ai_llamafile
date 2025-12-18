@@ -175,9 +175,11 @@ void repl() {
         if (!line) {
             if (g_got_sigint) {
                 ensure_newline();
-                // Skip cleanup to avoid Metal crash (see chatbot_main)
-                g_interrupted_exit = true;
             }
+            // Skip cleanup to avoid Metal crash (see chatbot_main)
+            // Setting g_interrupted_exit here covers both CTRL+C
+            // (sigint) and CTRL+D (newline)
+            g_interrupted_exit = true;
             break;
         }
         if (!is_base_model() && is_empty(line)) {
