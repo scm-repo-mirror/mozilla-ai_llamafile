@@ -34,15 +34,16 @@ diff --git a/tools/server/server.cpp b/tools/server/server.cpp
      common_init();
  
      // struct that contains llama context and inference
-@@ -302,5 +312,36 @@ int main(int argc, char ** argv, char ** envp) {
+@@ -302,5 +312,37 @@ int main(int argc, char ** argv, char ** envp) {
          llama_memory_breakdown_print(ctx_server.get_llama_context());
      }
  
 +#ifdef LLAMAFILE_TUI
 +    // By now the program can safely exit:
-+    // leave some time for llama_memory_breakdown_print
++    // Metal backend has async logging that llama_synchronize() doesn't wait for.
++    // Without this delay, _exit() might truncate llama_memory_breakdown_print's output
 +    sleep(1);
-+    // avoid dangling refs when TUI + llama.cpp + metal run together
++    // Use _exit() to avoid Metal cleanup crash (dangling refs with TUI + Metal + server)
 +    _exit(0);
 +#else
      return 0;
