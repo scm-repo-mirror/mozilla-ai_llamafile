@@ -175,8 +175,9 @@ void repl() {
         if (!line) {
             if (g_got_sigint) {
                 ensure_newline();
+                // Skip cleanup to avoid Metal crash (see chatbot_main)
+                g_interrupted_exit = true;
             }
-            g_interrupted_exit = true;  // Skip cleanup on any exit to avoid Metal crash
             break;
         }
         if (!is_base_model() && is_empty(line)) {

@@ -207,11 +207,6 @@ int main(int argc, char **argv) {
     // Run the REPL
     repl();
 
-    // Skip cleanup to avoid Metal backend crash on exit
-    if (g_interrupted_exit) {
-        _exit(0);
-    }
-
     // Synchronize before cleanup to ensure all GPU operations complete
     if (g_ctx) {
         llama_synchronize(g_ctx);
@@ -226,6 +221,12 @@ int main(int argc, char **argv) {
 
     if (g_sampler) {
         common_sampler_free(g_sampler);
+    }
+
+    // If interrupted, directly exit to avoid Metal backend crash on exit
+    // (NOTE: the issue occurs when llama_free(g_ctx) is run)
+    if (g_interrupted_exit) {
+        _exit(0);
     }
 
     print_ephemeral("freeing context...");
