@@ -31,6 +31,10 @@ LLAMAFILE_INCLUDES := \
 # ==============================================================================
 # Compiler flags
 # ==============================================================================
+# When LLAMAFILE_TUI is defined, llama.cpp server's main() function is renamed
+# to server_main() and called by llamafile's main.cpp. In the standalone build,
+# this flag is off and a new main() function is compiled to call server_main
+# (see llama.cpp/tools/server/server.cpp).
 
 LLAMAFILE_CPPFLAGS := \
 	$(LLAMAFILE_INCLUDES) \
@@ -147,8 +151,7 @@ LLAMAFILE_OBJS := \
 LLAMAFILE_HIGHLIGHT_GPERF_FILES := $(wildcard llamafile/highlight/*.gperf)
 LLAMAFILE_HIGHLIGHT_KEYWORDS := $(LLAMAFILE_HIGHLIGHT_GPERF_FILES:%.gperf=o/$(MODE)/%.o)
 
-# Server objects for llamafile (compiled with -DLLAMAFILE_TUI to exclude standalone main)
-# Note: server.cpp is compiled separately below with LLAMAFILE_TUI defined
+# Server objects for llamafile
 LLAMAFILE_SERVER_SUPPORT_OBJS := \
 	o/$(MODE)/llama.cpp/tools/server/server-common.cpp.o \
 	o/$(MODE)/llama.cpp/tools/server/server-context.cpp.o \
@@ -211,7 +214,7 @@ LLAMAFILE_SERVER_INCS := \
 	-iquote llama.cpp/tools/server \
 	-iquote o/$(MODE)/llama.cpp/tools/server
 
-# Compile server.cpp (-DLLAMAFILE_TUI excludes standalone main())
+# Compile server.cpp
 o/$(MODE)/llamafile/server.cpp.o: llama.cpp/tools/server/server.cpp $(SERVER_ASSETS)
 	@mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS) $(LLAMAFILE_CPPFLAGS) $(LLAMAFILE_SERVER_INCS) -c -o $@ $<
